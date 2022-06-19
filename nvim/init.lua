@@ -301,6 +301,7 @@ vim.api.nvim_exec([[
 vim.g.nvim_markdown_preview_theme = 'solarized-light'
 
 local actions = require "fzf-lua.actions"
+
 require('fzf-lua').setup({
 
     files = {
@@ -489,7 +490,8 @@ require('vgit').setup({
                 buffer_unstage = 'u',
                 stage_all = 'a',
                 unstage_all = 'd',
-                reset_all = 'r'
+                reset_all = 'R',
+                reset = 'r'
             }
         },
         signs = {
@@ -645,7 +647,19 @@ require('lualine').setup {
     sections = {
         lualine_a = {'mode'},
         lualine_b = {'branch', 'diff', 'diagnostics'},
-        lualine_c = {'filename'},
+        lualine_c = {
+            {
+                'filename',
+                file_status = true,
+                path = 1,
+                shorting_target = 40,
+                symbols = {
+                    modified = '[+]', -- Text to show when the file is modified.
+                    readonly = '[-]', -- Text to show when the file is non-modifiable or readonly.
+                    unnamed = '[No Name]' -- Text to show for unnamed buffers.
+                }
+            }
+        },
         lualine_x = {'encoding', 'fileformat', 'filetype'},
         lualine_y = {'progress'},
         lualine_z = {'location'}
@@ -664,30 +678,13 @@ require('lualine').setup {
 
 local keymap = vim.api.nvim_set_keymap
 
--- nmap <Leader>f <Plug>(prettier-format)
+-- More convinient way to get back to normal mode.
 keymap("i", "kj", "<Esc>", {noremap = true})
+keymap("i", "jj", '<Esc>', {noremap = true})
 
+-- Save the file.
 keymap("n", "<c-s>", ":w<CR>", {noremap = true})
-keymap("n", "<Leader>p", ":w<CR>", {noremap = true})
 keymap("i", "<c-s>", "<Esc>:w<CR>a", {noremap = true})
-keymap("n", "<c-q>", "<Plug>(prettier-format)", {noremap = true})
--- require("telescope").setup {
---   defaults = {
---     vimgrep_arguments = {
---       "rg",
---       "--color=never",
---       "--no-heading",
---       "--with-filename",
---       "--line-number",
---       "--column",
---       "--smart-case",
---       "--trim" -- add this value
---     }
---   }
--- }
-
--- You dont need to set any of these options. These are the default ones. Only
--- the loading is important
 
 local teleActions = require('telescope.actions')
 require('telescope').setup {
