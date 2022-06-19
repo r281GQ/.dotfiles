@@ -1082,7 +1082,6 @@ prettier.setup({
     use_tabs = false,
     vue_indent_script_and_style = false
 })
-
 -- keymap("n", "<Leader>fm", "<cmd>lua require('zettle').hello()<CR>", { noremap = true })
 
 -- keymap("n", "<leader><leader>x", "<cmd>w<CR><cmd>source %<CR>", {noremap = true})
@@ -1126,7 +1125,7 @@ pretty_print = function(args) print(vim.inspect(args)) end
 keymap('n', '<leader><leader>r', '<cmd>source ~/.config/nvim/init.lua<CR>',
        {noremap = true})
 
-keymap('n', '<leader><leader>f', '<cmd>Neotree<CR>', {noremap = true})
+-- keymap('n', '<leader><leader>f', '<cmd>Neotree<CR>', {noremap = true})
 
 keymap('n', '<F2>', '<cmd>Neotree<CR>', {noremap = true})
 require('close_buffers').setup({
