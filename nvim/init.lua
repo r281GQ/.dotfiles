@@ -304,6 +304,19 @@ local actions = require "fzf-lua.actions"
 
 require('fzf-lua').setup({
 
+    -- without these options, fzf caused bugs in render
+    winopts = {
+        -- split         = "new",           -- open in a split instead?
+        win_height = 0.85, -- window height
+        win_width = 0.80, -- window width
+        win_row = 0.30, -- window row position (0=top, 1=bottom)
+        win_col = 0.50, -- window col position (0=left, 1=right)
+        -- win_border    = false,           -- window border? or borderchars?
+        win_border = {'╭', '─', '╮', '│', '╯', '─', '╰', '│'},
+        window_on_create = function() -- nvim window options override
+            vim.cmd("set winhl=Normal:Normal") -- popup bg match normal windows
+        end
+    },
     files = {
         -- previewer      = "bat",          -- uncomment to override previewer
         -- (name from 'previewers' table)
@@ -707,8 +720,8 @@ require('telescope').setup {
                 ["<c-q>"] = teleActions.send_selected_to_qflist +
                     teleActions.open_qflist,
 
-                ["<c-p>"] = teleActions.preview_scrolling_down,
-                ["<c-n>"] = teleActions.preview_scrolling_up
+                ["<c-n>"] = teleActions.preview_scrolling_down,
+                ["<c-p>"] = teleActions.preview_scrolling_up
             }
         },
         preview = {treesitter = false}
@@ -763,8 +776,8 @@ keymap("n", "<Leader>fg", "<cmd>lua require('fzf-lua').live_grep()<CR>",
        {noremap = true})
 keymap("n", "<Leader>fb", "<cmd>lua require('telescope.builtin').buffers()<CR>",
        {noremap = true})
-keymap("n", "<Leader>bg",
-       "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>",
+keymap("n", "<Leader>/",
+       "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find({sorting_strategy = 'ascending'})<CR>",
        {noremap = true})
 -- nnoremap <leader>fg <cmd>lua require('telescope.builtin').live_grep()<cr>
 -- nnoremap <leader>fb <cmd>luarequire('telescope.builtin').buffers()<cr>
