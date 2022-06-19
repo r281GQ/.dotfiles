@@ -4,8 +4,21 @@ require('packer').startup(function(use)
     use {'tanvirtin/vgit.nvim', requires = {'nvim-lua/plenary.nvim'}}
     use 'kyazdani42/nvim-web-devicons'
     use 'sumneko/lua-language-server'
+    use({
+        "iamcco/markdown-preview.nvim",
+        run = function() vim.fn["mkdp#util#install"]() end
+    })
+
+    use {
+        "akinsho/toggleterm.nvim",
+        tag = 'v1.*',
+        config = function() require("toggleterm").setup() end
+    }
+
+    use "hrsh7th/cmp-path"
 
     use {'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim'}
+
     use {
         'akinsho/bufferline.nvim',
         tag = "*",
@@ -519,11 +532,13 @@ require('vgit').setup({
         symbols = {void = '⣿'}
     }
 })
+
 vim.o.updatetime = 300
 vim.o.incsearch = false
 vim.wo.signcolumn = 'yes'
+
 require('nvim_comment').setup({
-    line_mapping = "<leader>k",
+    line_mapping = "<leader>§",
     operator_mapping = "<leader>§",
     comment_chunk_text_object = "ic"
 })
@@ -534,6 +549,67 @@ local set = vim.opt
 
 set.ignorecase = true
 set.smartcase = true
+
+require("toggleterm").setup {
+    -- size can be a number or function which is passed the current terminal
+    size = function(term)
+        if term.direction == "horizontal" then
+            return 15
+        elseif term.direction == "vertical" then
+            return vim.o.columns * 0.4
+        end
+    end,
+    -- open_mapping = [[<c-\>]],
+    open_mapping = "<c-p>",
+    hide_numbers = true, -- hide the number column in toggleterm buffers
+    shade_filetypes = {},
+    highlights = {
+        -- highlights which map to a highlight group name and a table of it's values
+        -- NOTE: this is only a subset of values, any group placed here will be set for the terminal window split
+        -- Normal = {
+        --   guibg = <VALUE-HERE>,
+        -- },
+        NormalFloat = {link = 'Normal'}
+        -- FloatBorder = {
+        --   guifg = <VALUE-HERE>,
+        --   guibg = <VALUE-HERE>,
+        -- },
+    },
+    shade_terminals = true,
+    shading_factor = 2, -- the degree by which to darken to terminal colour, default: 1 for dark backgrounds, 3 for light
+    start_in_insert = true,
+    insert_mappings = true, -- whether or not the open mapping applies in insert mode
+    terminal_mappings = true, -- whether or not the open mapping applies in the opened terminals
+    persist_size = true,
+    direction = 'horizontal',
+    close_on_exit = true, -- close the terminal window when the process exits
+    shell = vim.o.shell -- change the default shell,
+    -- This field is only relevant if direction is set to 'float'
+    -- float_opts = {
+    --     -- The border key is *almost* the same as 'nvim_open_win'
+    --     -- see :h nvim_open_win for details on borders however
+    --     -- the 'curved' border is a custom border type
+    --     -- not natively supported but implemented in this plugin.
+    --     border = 'double',
+    --     width = 40,
+    --     height = 40,
+    --     winblend = 3
+    -- }
+}
+
+local Terminal = require('toggleterm.terminal').Terminal
+
+local lazygit = Terminal:new({cmd = "lazygit", direction = "float"})
+local btm = Terminal:new({cmd = "btm", direction = "float"})
+
+TOGGLE_LAZY_GIT = function() lazygit:toggle() end
+TOGGLE_BTM = function() btm:toggle() end
+
+vim.api.nvim_set_keymap("n", "<leader>zz", "<cmd>lua TOGGLE_LAZY_GIT()<CR>",
+                        {noremap = true, silent = true})
+
+vim.api.nvim_set_keymap("n", "<leader>ss", "<cmd>lua TOGGLE_BTM()<CR>",
+                        {noremap = true, silent = true})
 
 -- Lua
 vim.cmd [[colorscheme tokyonight]]
