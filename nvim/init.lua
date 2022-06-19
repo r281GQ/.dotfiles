@@ -1,5 +1,6 @@
 require('packer').startup(function(use)
     -- Packer can manage itself
+    use 'kazhala/close-buffers.nvim'
     use 'wbthomason/packer.nvim'
     use {'tanvirtin/vgit.nvim', requires = {'nvim-lua/plenary.nvim'}}
     use 'kyazdani42/nvim-web-devicons'
@@ -262,6 +263,11 @@ end)
 vim.g.mapleader = ' '
 
 vim.opt.termguicolors = true
+
+vim.api.nvim_exec([[
+  let g:nvim_markdown_preview_theme = 'solarized-light'
+]], false)
+
 require("bufferline").setup {}
 require'nvim-web-devicons'.setup {
     -- your personnal icons can go here (to override)
@@ -280,14 +286,19 @@ require'nvim-web-devicons'.setup {
     default = true
 }
 
-local npairs = require('nvim-autopairs')
-npairs.setup({
+require("nvim-autopairs").setup({
     check_ts = true,
     ts_config = {javascript = {'string'}},
     map_complete = true, ----------------- it doesn't have map_complete
     map_cr = false, -----------------------------------------------> WRONG change to true ? where did you get that ??
     auto_select = true --- ---------- it doesn't have auto_select
 })
+
+vim.g.mkdp_preview_options = {sequence_diagrams = {theme = 'simple'}}
+vim.api.nvim_exec([[
+  let g:nvim_markdown_preview_theme = 'solarized-light'
+]], false)
+vim.g.nvim_markdown_preview_theme = 'solarized-light'
 
 local actions = require "fzf-lua.actions"
 require('fzf-lua').setup({
