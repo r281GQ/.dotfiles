@@ -745,7 +745,7 @@ keymap("n", "<Leader>ff",
        {noremap = true})
 
 keymap("n", "<Leader>vc",
-       "<cmd>lua require('telescope.builtin').find_files({ cwd = '~/.config', file_ignore_patterns = { 'tags*' }})<CR>",
+       "<cmd>lua require('telescope.builtin').find_files({ cwd = '~/.dotfiles', file_ignore_patterns = { 'git*' }, hidden = true})<CR>",
        {noremap = true})
 --
 keymap("n", "<Leader>ht",
@@ -767,10 +767,19 @@ keymap("n", "<Leader>fp", "<cmd>lua require('fzf-lua').commands()<CR>",
 
 keymap("n", "<Leader>fw", "<cmd>lua require('fzf-lua').grep_cword()<CR>",
        {noremap = true})
-keymap("n", "<Leader>gb", "<cmd>lua require('fzf-lua').git_branches()<CR>",
+keymap("n", "<Leader>gb",
+       "<cmd>lua require('telescope.builtin').git_commits()<CR>",
+       {noremap = true})
+keymap("n", "<Leader>gg",
+       "<cmd>lua require('telescope.builtin').git_bcommits()<CR>",
        {noremap = true})
 
-keymap("n", "<Leader>fr", "<cmd>lua require('fzf-lua').git_commits()<CR>",
+keymap("n", "<Leader>gl",
+       "<cmd>lua require('telescope.builtin').git_status()<CR>",
+       {noremap = true})
+
+keymap("n", "<Leader>fr",
+       "<cmd>lua require('telescope.builtin').git_branches()<CR>",
        {noremap = true})
 keymap("n", "<Leader>fg", "<cmd>lua require('fzf-lua').live_grep()<CR>",
        {noremap = true})
@@ -857,6 +866,9 @@ local on_attach = function(client, bufnr)
                                 '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd',
                                 '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gt',
+                                '<cmd>lua vim.lsp.buf.type_definition()<CR>',
+                                opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K',
                                 '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi',
@@ -872,44 +884,68 @@ local on_attach = function(client, bufnr)
                                 '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>',
                                 opts)
     --  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>D',
-                                '<cmd>lua vim.lsp.buf.type_definition()<CR>',
-                                opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>rn',
+    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>D',
+    --                             '<cmd>lua vim.lsp.buf.type_definition()<CR>',
+    --                             opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>rn',
                                 '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<Leader>ca',
                                 '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr',
                                 '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f',
-                                '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ll',
+    --                             '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 -- local servers = { 'pyright', 'rust_analyzer', 'tsserver', 'prosemd' }
-local servers = {'pyright', 'rust_analyzer', 'tsserver'}
+local servers = {'pyright', 'tsserver'}
 
---  local lspc = require('lspconfig.configs')
---
---  lspc.prosemd = {
---    default_config = {
---      -- Update the path to prosemd-lsp
---      -- cmd = { "/Users/endrevegh/Downloads/prosemd-lsp-macos", "--stdio" },
---      cmd = { "/Users/endrevegh/.cargo/bin/prosemd-lsp", "--stdio" },
---      filetypes = { "markdown" },
---
---      root_dir = function(fname)
---        return vim.fn.getcwd()
---        -- return lsp_util.find_git_ancestor(fname) or vim.fn.getcwd()
---      end,
---      settings = {},
---      }
---    }
+local lspc = require('lspconfig.configs')
+
+-- experimental md lsp setup
+lspc.tt = {
+    default_config = {
+        cmd = {"/Users/endrevegh/Repos/personal/md/index-macos", "--stdio"},
+        filetypes = {"markdown"},
+        root_dir = function(_fname) return vim.fn.getcwd() end,
+        settings = {}
+    }
+}
+
+lspc.prosemd = {
+    default_config = {
+        -- Update the path to prosemd-lsp
+        -- cmd = { "/Users/endrevegh/Downloads/prosemd-lsp-macos", "--stdio" },
+        cmd = {"/Users/endrevegh/.cargo/bin/prosemd-lsp", "--stdio"},
+        filetypes = {"markdown"},
+        root_dir = function(_fname)
+            print('this run')
+            return vim.fn.getcwd()
+            -- return lsp_util.find_git_ancestor(fname) or vim.fn.getcwd()
+        end,
+        settings = {}
+    }
+}
 
 require'lspconfig'.bashls.setup {}
+require'lspconfig'.tt.setup {on_attach = on_attach}
+require'lspconfig'.prosemd.setup {on_attach = on_attach}
 require'lspconfig'.terraformls.setup {filetypes = {'terraform', 'tf'}}
-require'lspconfig'.tflint.setup {}
+-- require'lspconfig'.tflint.setup {}
+require'lspconfig'.rust_analyzer.setup {
+
+    on_attach = on_attach,
+    settings = {
+        ["rust-analyzer"] = {
+            assist = {importGranularity = "module", importPrefix = "self"},
+            cargo = {loadOutDirsFromCheck = true},
+            procMacro = {enable = true}
+        }
+    }
+
+}
 require'lspconfig'.sumneko_lua.setup {
     settings = {
         Lua = {
@@ -975,7 +1011,8 @@ cmp.setup({
         ['<CR>'] = cmp.mapping.confirm({select = true}) -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
     },
     sources = cmp.config.sources({
-        {name = 'nvim_lsp'}, {name = 'vsnip'} -- For vsnip users.
+        {name = 'nvim_lsp'}, {name = 'vsnip'} -- For vsnip users., 
+        , {name = "path"}
         -- { name = 'luasnip' }, -- For luasnip users.
         -- { name = 'ultisnips' }, -- For ultisnips users.
         -- { name = 'snippy' }, -- For snippy users.
@@ -1019,13 +1056,18 @@ cmp.setup({
 
 local prettier = require "prettier"
 
+local prettier = require "prettier"
 null_ls.setup({
     sources = {
         -- builtins.formatting.stylua,
         -- null_ls.builtins.formatting.prettier,
         require("null-ls").builtins.formatting.prettier,
         require("null-ls").builtins.formatting.lua_format,
-        require("null-ls").builtins.diagnostics.eslint
+        require("null-ls").builtins.diagnostics.eslint,
+        require("null-ls").builtins.formatting.shfmt,
+        require("null-ls").builtins.formatting.rustfmt.with({
+            extra_args = {"--edition=2021"}
+        })
         -- null_ls.builtins.diagnostics.eslint,
         --     null_ls.builtins.completion.spell,
     },
@@ -1039,10 +1081,9 @@ null_ls.setup({
         if client.resolved_capabilities.document_formatting then
             -- vim.cmd("nnoremap <silent><buffer> <Leader>f :lua vim.lsp.buf.formatting()<CR>")
             -- vim.cmd("nnoremap <silent><buffer> <C>o :lua vim.lsp.buf.formatting()<CR>")
-            -- -- format on save
+            -- format on save
             -- vim.cmd("autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()")
         end
-
         if client.resolved_capabilities.document_range_formatting then
             vim.cmd(
                 "xnoremap <silent><buffer> <Leader>f :lua vim.lsp.buf.range_formatting({})<CR>")
@@ -1115,9 +1156,58 @@ keymap('n', '<leader>cm', '<cmd>DiffviewOpen main<CR>', {noremap = true}) -- , '
 
 pretty_print = function(args) print(vim.inspect(args)) end
 
+-- Reloads config file from everywhere.
 keymap('n', '<leader><leader>r', '<cmd>source ~/.config/nvim/init.lua<CR>',
        {noremap = true})
 
 keymap('n', '<leader><leader>f', '<cmd>Neotree<CR>', {noremap = true})
 
 keymap('n', '<F2>', '<cmd>Neotree<CR>', {noremap = true})
+require('close_buffers').setup({
+    filetype_ignore = {}, -- Filetype to ignore when running deletions
+    file_glob_ignore = {}, -- File name glob pattern to ignore when running deletions (e.g. '*.md')
+    file_regex_ignore = {}, -- File name regex pattern to ignore when running deletions (e.g. '.*[.]md')
+    preserve_window_layout = {'this', 'nameless'}, -- Types of deletion that should preserve the window layout
+    next_buffer_cmd = nil -- Custom function to retrieve the next buffer when preserving window layout
+})
+
+vim.api.nvim_set_keymap('n', '<leader>td',
+                        "<CMD>lua require('close_buffers').delete({type = 'this'})<CR>",
+                        {noremap = true, silent = true})
+
+vim.api.nvim_set_keymap('n', '<leader>tw',
+                        "<CMD>lua require('close_buffers').delete({type = 'other'})<CR>",
+                        {noremap = true, silent = true})
+
+-- disable arrows
+keymap('n', '<up>', '<nop>', {noremap = true})
+keymap('n', '<down>', '<nop>', {noremap = true})
+keymap('n', '<left>', '<nop>', {noremap = true})
+keymap('n', '<right>', '<nop>', {noremap = true})
+keymap('i', '<up>', '<nop>', {noremap = true})
+keymap('i', '<down>', '<nop>', {noremap = true})
+keymap('i', '<left>', '<nop>', {noremap = true})
+keymap('i', '<right>', '<nop>', {noremap = true})
+
+keymap("n", "<Leader>web",
+       "<cmd>lua require('telescope.builtin').git_files({ cwd = '~/Repos/formidable/puma/', file_ignore_patterns = { 'tags*' }})<CR>",
+       {noremap = true})
+
+keymap("n", "<Leader>app",
+       "<cmd>lua require('telescope.builtin').git_files({ cwd = '~/Repos/formidable/puma-app/', file_ignore_patterns = { 'tags*' }})<CR>",
+       {noremap = true})
+keymap("n", "<leader>th", "<cmd>ToggleTerm size=10 direction=horizontal<cr>",
+       {desc = "ToggleTerm horizontal split"})
+keymap("n", "<leader>tv", "<cmd>ToggleTerm size=80 direction=vertical<cr>",
+       {desc = "ToggleTerm vertical split"})
+keymap("n", "<leader>tf", "<cmd>ToggleTerm direction=float<cr>",
+       {desc = "ToggleTerm float"})
+keymap("n", "<C-Up>", "<cmd>resize -2<CR>", {desc = "Resize split up"})
+keymap("n", "<C-Down>", "<cmd>resize +2<CR>", {desc = "Resize split down"})
+keymap("n", "<C-Left>", "<cmd>vertical resize -2<CR>",
+       {desc = "Resize split left"})
+keymap("n", "<C-Right>", "<cmd>vertical resize +2<CR>",
+       {desc = "Resize split right"})
+keymap("n", "<leader>m", ":MarkdownPreview<cr>", {desc = "Resize split right"})
+
+require'lspconfig'.html.setup {on_attach = on_attach}
