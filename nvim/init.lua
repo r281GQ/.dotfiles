@@ -1019,42 +1019,8 @@ cmp.setup({
     }, {{name = 'buffer'}})
 })
 
---   -- Set configuration for specific filetype.
---   cmp.setup.filetype('gitcommit', {
---     sources = cmp.config.sources({
---       { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
---     }, {
---       { name = 'buffer' },
---     })
---   })
-
---   -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
---   cmp.setup.cmdline('/', {
---     sources = {
---       { name = 'buffer' }
---     }
---   })
-
---   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
---   cmp.setup.cmdline(':', {
---     sources = cmp.config.sources({
---       { name = 'path' }
---     }, {
---       { name = 'cmdline' }
---     })
---   })
-
---   -- Setup lspconfig.
---   local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
---   -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
---   require('lspconfig')['tsserver'].setup {
---     capabilities = capabilities
---   }
-
--- require("lsp-format").setup {}
--- require "lspconfig".gopls.setup { on_attach = require "lsp-format".on_attach }
-
-local prettier = require "prettier"
+vim.g.rustfmt_command =
+    '~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustfmt'
 
 local prettier = require "prettier"
 null_ls.setup({
@@ -1084,6 +1050,7 @@ null_ls.setup({
             -- format on save
             -- vim.cmd("autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()")
         end
+
         if client.resolved_capabilities.document_range_formatting then
             vim.cmd(
                 "xnoremap <silent><buffer> <Leader>f :lua vim.lsp.buf.range_formatting({})<CR>")
@@ -1097,7 +1064,6 @@ prettier.setup({
         "css", "graphql", "html", "javascript", "javascriptreact", "json",
         "less", "markdown", "scss", "typescript", "typescriptreact", "yaml"
     },
-
     -- prettier format options (you can use config files too. ex: `.prettierrc`)
     arrow_parens = "always",
     bracket_spacing = true,
