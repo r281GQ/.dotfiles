@@ -138,7 +138,7 @@ require('packer').startup(function(use)
                     mappings = {
                         ["<space>"] = {
                             "toggle_node",
-                            nowait = false -- disable `nowait` if you have existing combos starting with this char that you want to use 
+                            nowait = false -- disable `nowait` if you have existing combos starting with this char that you want to use
                         },
                         ["<2-LeftMouse>"] = "open",
                         ["<cr>"] = "open",
@@ -833,7 +833,6 @@ vim.api.nvim_set_option('guicursor', "i:ver1")
 -- vim.api.nvim_set_option('smarttab', false)
 -- print(vim.api.nvim_get_option('smarttab')) -- false
 
-local async = require "plenary.async"
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 -- vim.opt.foldnestmax = 1
@@ -909,7 +908,7 @@ lspc.tt = {
     default_config = {
         cmd = {"/Users/endrevegh/Repos/personal/md/index-macos", "--stdio"},
         filetypes = {"markdown"},
-        root_dir = function(_fname) return vim.fn.getcwd() end,
+        root_dir = function() return vim.fn.getcwd() end,
         settings = {}
     }
 }
@@ -920,8 +919,7 @@ lspc.prosemd = {
         -- cmd = { "/Users/endrevegh/Downloads/prosemd-lsp-macos", "--stdio" },
         cmd = {"/Users/endrevegh/.cargo/bin/prosemd-lsp", "--stdio"},
         filetypes = {"markdown"},
-        root_dir = function(_fname)
-            print('this run')
+        root_dir = function()
             return vim.fn.getcwd()
             -- return lsp_util.find_git_ancestor(fname) or vim.fn.getcwd()
         end,
@@ -1011,7 +1009,7 @@ cmp.setup({
         ['<CR>'] = cmp.mapping.confirm({select = true}) -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
     },
     sources = cmp.config.sources({
-        {name = 'nvim_lsp'}, {name = 'vsnip'} -- For vsnip users., 
+        {name = 'nvim_lsp'}, {name = 'vsnip'} -- For vsnip users.,
         , {name = "path"}
         -- { name = 'luasnip' }, -- For luasnip users.
         -- { name = 'ultisnips' }, -- For ultisnips users.
@@ -1037,19 +1035,19 @@ null_ls.setup({
         -- null_ls.builtins.diagnostics.eslint,
         --     null_ls.builtins.completion.spell,
     },
-    on_attach = function(client, bufnr)
+    on_attach = function(client)
         vim.cmd([[
             augroup LspFormatting
                 autocmd! * <buffer>
                 autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
             augroup END
             ]])
-        if client.resolved_capabilities.document_formatting then
-            -- vim.cmd("nnoremap <silent><buffer> <Leader>f :lua vim.lsp.buf.formatting()<CR>")
-            -- vim.cmd("nnoremap <silent><buffer> <C>o :lua vim.lsp.buf.formatting()<CR>")
-            -- format on save
-            -- vim.cmd("autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()")
-        end
+        -- if client.resolved_capabilities.document_formatting then
+        --     -- vim.cmd("nnoremap <silent><buffer> <Leader>f :lua vim.lsp.buf.formatting()<CR>")
+        --     -- vim.cmd("nnoremap <silent><buffer> <C>o :lua vim.lsp.buf.formatting()<CR>")
+        --     -- format on save
+        --     -- vim.cmd("autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()")
+        -- end
 
         if client.resolved_capabilities.document_range_formatting then
             vim.cmd(
@@ -1118,8 +1116,6 @@ keymap('n', '<leader>cp', '<cmd>cprev<CR>', {noremap = true}) -- , 'inc heightʳ
 keymap('n', '<leader>lp', '<cmd>lprev<CR>', {noremap = true}) -- , 'inc heightʳ' )
 
 keymap('n', '<leader>cm', '<cmd>DiffviewOpen main<CR>', {noremap = true}) -- , 'inc heightʳ' )
-
-pretty_print = function(args) print(vim.inspect(args)) end
 
 -- Reloads config file from everywhere.
 keymap('n', '<leader><leader>r', '<cmd>source ~/.config/nvim/init.lua<CR>',
