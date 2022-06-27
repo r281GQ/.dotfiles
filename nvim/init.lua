@@ -508,7 +508,8 @@ require('vgit').setup({
             }
         },
         signs = {
-            priority = 10,
+            -- this allows lsp diagnostics to show up
+            priority = 1,
             definitions = {
                 GitSignsAddLn = {
                     linehl = 'GitSignsAddLn',
