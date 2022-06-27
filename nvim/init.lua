@@ -626,8 +626,31 @@ require("toggleterm").setup {
 
 local Terminal = require('toggleterm.terminal').Terminal
 
-local lazygit = Terminal:new({cmd = "lazygit", direction = "float"})
-local btm = Terminal:new({cmd = "btm", direction = "float"})
+local lazygit = Terminal:new({
+    cmd = "lazygit",
+    direction = "float",
+    float_opts = {
+        -- The border key is *almost* the same as 'nvim_open_win'
+        -- see :h nvim_open_win for details on borders however
+        -- the 'curved' border is a custom border type
+        -- not natively supported but implemented in this plugin.
+        border = 'double',
+        height = 100
+    }
+})
+
+local btm = Terminal:new({
+    cmd = "btm",
+    direction = "float",
+    float_opts = {
+        -- The border key is *almost* the same as 'nvim_open_win'
+        -- see :h nvim_open_win for details on borders however
+        -- the 'curved' border is a custom border type
+        -- not natively supported but implemented in this plugin.
+        border = 'double',
+        height = 100
+    }
+})
 
 TOGGLE_LAZY_GIT = function() lazygit:toggle() end
 TOGGLE_BTM = function() btm:toggle() end
