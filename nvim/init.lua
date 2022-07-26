@@ -1205,3 +1205,33 @@ keymap("n", "<C-Right>", "<cmd>vertical resize +2<CR>",
 keymap("n", "<leader>m", ":MarkdownPreview<cr>", {desc = "Resize split right"})
 
 require'lspconfig'.html.setup {on_attach = on_attach}
+vim.g.t_Co = 256
+
+-- utils
+
+local removePackage =
+    function(packageName) package.loaded[packageName] = nil end
+
+local assignPackage = function(packageName)
+    package.loaded[packageName] = require(packageName)
+end
+
+R = function(packageName)
+    removePackage(packageName)
+    assignPackage(packageName)
+end
+
+vim.cmd [[:autocmd InsertEnter * set cul
+:autocmd InsertLeave * set nocul]]
+
+-- issue when opening a file with telescope intterupts folds, need to make it for other events, like focus.
+vim.api.nvim_create_autocmd({"BufEnter"},
+                            {pattern = {"*"}, command = "normal zx"})
+
+require('zettelkasten').setup({
+    root_dir = "/Users/endrevegh/Dropbox/obsidian/personal/journal"
+})
+
+vim.api.nvim_set_keymap("n", "<leader>pd",
+                        "<cmd> lua require('zettelkasten').daily_journal()<CR>",
+                        {noremap = true})
