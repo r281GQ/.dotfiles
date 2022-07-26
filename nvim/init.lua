@@ -1,5 +1,11 @@
 require('packer').startup(function(use)
     -- Packer can manage itself
+    -- My own plugins under development
+    use {
+        "/Users/endrevegh/Repos/personal/zettelkasten.nvim",
+        requires = {"nvim-lua/plenary.nvim"}
+    }
+    --
     use 'kazhala/close-buffers.nvim'
     use 'wbthomason/packer.nvim'
     use {'tanvirtin/vgit.nvim', requires = {'nvim-lua/plenary.nvim'}}
