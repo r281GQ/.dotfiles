@@ -241,8 +241,6 @@ require('packer').startup(function(use)
     use 'MunifTanjim/prettier.nvim'
     use "jose-elias-alvarez/null-ls.nvim"
     use "nvim-lua/plenary.nvim"
-    --    use 'ludovicchabant/vim-gutentags'
-    use 'tpope/vim-fugitive'
     use 'folke/tokyonight.nvim'
     use "terrortylor/nvim-comment"
 
@@ -260,9 +258,13 @@ end)
 -- If you want insert `(` after select function or method item
 -- local cmp_autopairs = require('nvim-autopairs.completion.cmp')
 
+-- space as <leader>
 vim.g.mapleader = ' '
 
-vim.opt.termguicolors = true
+-- vim.opt.termguicolors = false
+vim.cmd([[ if (has("termguicolors"))
+  set termguicolors
+endif ]])
 
 vim.api.nvim_exec([[
   let g:nvim_markdown_preview_theme = 'solarized-light'
@@ -928,7 +930,7 @@ local servers = {'pyright', 'tsserver'}
 local lspc = require('lspconfig.configs')
 
 -- experimental md lsp setup
-lspc.tt = {
+lspc.zettel = {
     default_config = {
         cmd = {"/Users/endrevegh/Repos/personal/md/index-macos", "--stdio"},
         filetypes = {"markdown"},
@@ -952,7 +954,7 @@ lspc.prosemd = {
 }
 
 require'lspconfig'.bashls.setup {}
-require'lspconfig'.tt.setup {on_attach = on_attach}
+require'lspconfig'.zettel.setup {on_attach = on_attach}
 require'lspconfig'.prosemd.setup {on_attach = on_attach}
 require'lspconfig'.terraformls.setup {filetypes = {'terraform', 'tf'}}
 -- require'lspconfig'.tflint.setup {}
@@ -974,7 +976,8 @@ require'lspconfig'.sumneko_lua.setup {
             diagnostics = {
                 enabled = true,
                 globals = {
-                    "hs", "vim", "it", "describe", "before_each", "after_each"
+                    "hs", "vim", "it", "describe", "before_each", "after_each",
+                    "P"
                 }
             },
             workspace = {
@@ -1142,7 +1145,7 @@ keymap('n', '<leader>lp', '<cmd>lprev<CR>', {noremap = true}) -- , 'inc heightʳ
 keymap('n', '<leader>cm', '<cmd>DiffviewOpen main<CR>', {noremap = true}) -- , 'inc heightʳ' )
 
 -- Reloads config file from everywhere.
-keymap('n', '<leader><leader>r', '<cmd>source ~/.config/nvim/init.lua<CR>',
+keymap('n', '<leader>rr', '<cmd>source ~/.config/nvim/init.lua<CR>',
        {noremap = true})
 
 -- keymap('n', '<leader><leader>f', '<cmd>Neotree<CR>', {noremap = true})

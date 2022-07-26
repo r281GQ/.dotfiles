@@ -9,7 +9,7 @@ return {
     window_decorations = "RESIZE",
     -- Default folder to open.
     cwd = '/Users/endrevegh/Repos',
-    window_padding = {left = 10, right = 0, top = 0, bottom = 0},
+    window_padding = {left = 6, right = 0, top = 0, bottom = 0},
     -- That makes wezterm not to consume lalt, so it can be used by yabai.
     send_composed_key_when_left_alt_is_pressed = false,
     send_composed_key_when_right_alt_is_pressed = true
