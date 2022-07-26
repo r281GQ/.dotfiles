@@ -799,9 +799,6 @@ keymap("n", "<Leader>fp", "<cmd>lua require('fzf-lua').commands()<CR>",
 
 keymap("n", "<Leader>fw", "<cmd>lua require('fzf-lua').grep_cword()<CR>",
        {noremap = true})
-keymap("n", "<Leader>gb",
-       "<cmd>lua require('telescope.builtin').git_commits()<CR>",
-       {noremap = true})
 keymap("n", "<Leader>gg",
        "<cmd>lua require('telescope.builtin').git_bcommits()<CR>",
        {noremap = true})
