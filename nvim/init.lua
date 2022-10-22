@@ -5,6 +5,11 @@ require('packer').startup(function(use)
         "/Users/endrevegh/Repos/personal/zettelkasten.nvim",
         requires = {"nvim-lua/plenary.nvim"}
     }
+
+    use {'lewis6991/gitsigns.nvim'}
+
+    use 'ThePrimeagen/harpoon'
+    use {"catppuccin/nvim", as = "catppuccin"}
     --
     use 'kazhala/close-buffers.nvim'
     use 'wbthomason/packer.nvim'
