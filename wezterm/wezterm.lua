@@ -4,7 +4,8 @@ return {
     -- Hide tabs.
     enable_tab_bar = false,
     enable_scroll_bar = false,
-    color_scheme = "Dracula",
+    -- color_scheme = "Dracula",
+    color_scheme = "Catppuccin Mocha",
     -- No top but resizable for yabai.
     window_decorations = "RESIZE",
     -- Default folder to open.
