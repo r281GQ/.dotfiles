@@ -4,7 +4,7 @@ yabai -m config top_padding                 8
 yabai -m config bottom_padding              8
 yabai -m config left_padding                8
 yabai -m config right_padding               8
-yabai -m config window_gap                  12
+yabai -m config window_gap                  8
 
 yabai -m config mouse_follows_focus         off
 yabai -m config focus_follows_mouse         off
@@ -13,7 +13,7 @@ yabai -m config window_topmost              off
 yabai -m config window_opacity              off
 yabai -m config window_shadow               float
 
-yabai -m config window_border               on
+yabai -m config window_border               off
 yabai -m config window_border_width         4
 yabai -m config active_window_border_color  0xff6d3ab0
 
@@ -36,12 +36,4 @@ yabai -m rule --add label="mpv" app="^mpv$" manage=off
 yabai -m rule --add label="Software Update" title="Software Update" manage=off
 yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
 
-yabai -m config external_bar                 all:30:0
-
-yabai -m signal --add event=window_created action='ymsp window-created'
-
-yabai -m signal --add event=application_launched action='ymsp window-created'
-
-yabai -m signal --add event=window_moved action='ymsp window-moved'
-
-ymsp on-yabai-start
+# yabai -m config external_bar                 all:30:0
