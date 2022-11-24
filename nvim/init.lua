@@ -274,12 +274,12 @@ vim.g.mapleader = ' '
 
 -- vim.opt.termguicolors = false
 vim.cmd([[ if (has("termguicolors"))
-  set termguicolors
-endif ]])
+   set termguicolors
+ endif ]])
 
 vim.api.nvim_exec([[
-  let g:nvim_markdown_preview_theme = 'solarized-light'
-]], false)
+   let g:nvim_markdown_preview_theme = 'solarized-light'
+ ]], false)
 
 require("bufferline").setup {}
 require'nvim-web-devicons'.setup {
@@ -309,8 +309,8 @@ require("nvim-autopairs").setup({
 
 vim.g.mkdp_preview_options = {sequence_diagrams = {theme = 'simple'}}
 vim.api.nvim_exec([[
-  let g:nvim_markdown_preview_theme = 'solarized-light'
-]], false)
+   let g:nvim_markdown_preview_theme = 'solarized-light'
+ ]], false)
 vim.g.nvim_markdown_preview_theme = 'solarized-light'
 
 local actions = require "fzf-lua.actions"
