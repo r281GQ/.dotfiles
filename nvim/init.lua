@@ -775,7 +775,13 @@ vim.api.nvim_set_keymap("n", "<leader>btm", "<cmd>lua TOGGLE_BTM()<CR>",
                         {noremap = true, silent = true})
 
 -- Lua
-vim.cmd [[colorscheme tokyonight]]
+-- vim.cmd [[colorscheme tokyonight]]
+
+vim.g.catppuccin_flavour = "macchiato" -- latte, frappe, macchiato, mocha
+
+require("catppuccin").setup()
+
+vim.cmd [[colorscheme catppuccin]]
 
 -- Set the behavior of tab
 set.tabstop = 2
