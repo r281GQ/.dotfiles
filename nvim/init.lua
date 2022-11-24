@@ -996,7 +996,8 @@ vim.api.nvim_set_keymap('n', '<Leader>q',
 local on_attach = function(client, bufnr)
     -- Enable completion triggered by <c-x><c-o>
     -- This disables document formatting for language servers
-    client.resolved_capabilities.document_formatting = false
+    -- client.resolved_capabilities.document_formatting = false
+    client.server_capabilities.document_formatting = false
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
     -- Mappings.
@@ -1013,9 +1014,9 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi',
                                 '<cmd>lua vim.lsp.buf.implementation()<CR>',
                                 opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>',
-                                '<cmd>lua vim.lsp.buf.signature_help()<CR>',
-                                opts)
+    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>',
+    --                             '<cmd>lua vim.lsp.buf.signature_help()<CR>',
+    -- opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wa',
                                 '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>',
                                 opts)
@@ -1161,14 +1162,14 @@ cmp.setup({
 vim.g.rustfmt_command =
     '~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustfmt'
 
-local prettier = require "prettier"
+-- local prettier = require "prettier"
 null_ls.setup({
     sources = {
         -- builtins.formatting.stylua,
         -- null_ls.builtins.formatting.prettier,
-        require("null-ls").builtins.formatting.prettier,
+        require("null-ls").builtins.formatting.prettierd,
         require("null-ls").builtins.formatting.lua_format,
-        require("null-ls").builtins.diagnostics.eslint,
+        require("null-ls").builtins.diagnostics.eslint_d,
         require("null-ls").builtins.formatting.shfmt,
         require("null-ls").builtins.formatting.rustfmt.with({
             extra_args = {"--edition=2021"}
@@ -1178,11 +1179,11 @@ null_ls.setup({
     },
     on_attach = function(client)
         vim.cmd([[
-            augroup LspFormatting
-                autocmd! * <buffer>
-                autocmd BufWritePre <buffer> lua vim.lsp.buf.formatting_sync()
-            augroup END
-            ]])
+             augroup LspFormatting
+                 autocmd! * <buffer>
+                 autocmd BufWritePre <buffer> lua vim.lsp.buf.format()
+             augroup END
+             ]])
         -- if client.resolved_capabilities.document_formatting then
         --     -- vim.cmd("nnoremap <silent><buffer> <Leader>f :lua vim.lsp.buf.formatting()<CR>")
         --     -- vim.cmd("nnoremap <silent><buffer> <C>o :lua vim.lsp.buf.formatting()<CR>")
@@ -1190,37 +1191,37 @@ null_ls.setup({
         --     -- vim.cmd("autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()")
         -- end
 
-        if client.resolved_capabilities.document_range_formatting then
+        if client.server_capabilities.document_range_formatting then
             vim.cmd(
-                "xnoremap <silent><buffer> <Leader>f :lua vim.lsp.buf.range_formatting({})<CR>")
+                "xnoremap <silent><buffer> <Leader>f :lua vim.lsp.buf.document_range_formatting({})<CR>")
         end
     end
 })
 
-prettier.setup({
-    bin = 'prettier', -- or `prettierd`
-    filetypes = {
-        "css", "graphql", "html", "javascript", "javascriptreact", "json",
-        "less", "markdown", "scss", "typescript", "typescriptreact", "yaml"
-    },
-    -- prettier format options (you can use config files too. ex: `.prettierrc`)
-    arrow_parens = "always",
-    bracket_spacing = true,
-    embedded_language_formatting = "auto",
-    end_of_line = "lf",
-    html_whitespace_sensitivity = "css",
-    jsx_bracket_same_line = false,
-    jsx_single_quote = false,
-    print_width = 80,
-    prose_wrap = "preserve",
-    quote_props = "as-needed",
-    semi = true,
-    single_quote = false,
-    tab_width = 2,
-    trailing_comma = "es5",
-    use_tabs = false,
-    vue_indent_script_and_style = false
-})
+-- prettier.setup({
+--     bin = 'prettier', -- or `prettierd`
+--     filetypes = {
+--         "css", "graphql", "html", "javascript", "javascriptreact", "json",
+--         "less", "markdown", "scss", "typescript", "typescriptreact", "yaml"
+--     },
+--     -- prettier format options (you can use config files too. ex: `.prettierrc`)
+--     arrow_parens = "always",
+--     bracket_spacing = true,
+--     embedded_language_formatting = "auto",
+--     end_of_line = "lf",
+--     html_whitespace_sensitivity = "css",
+--     jsx_bracket_same_line = false,
+--     jsx_single_quote = false,
+--     print_width = 80,
+--     prose_wrap = "preserve",
+--     quote_props = "as-needed",
+--     semi = true,
+--     single_quote = false,
+--     tab_width = 2,
+--     trailing_comma = "es5",
+--     use_tabs = false,
+--     vue_indent_script_and_style = false
+-- })
 -- keymap("n", "<Leader>fm", "<cmd>lua require('zettle').hello()<CR>", { noremap = true })
 
 -- keymap("n", "<leader><leader>x", "<cmd>w<CR><cmd>source %<CR>", {noremap = true})
