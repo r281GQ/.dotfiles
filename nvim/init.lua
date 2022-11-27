@@ -6,6 +6,19 @@ require('packer').startup(function(use)
         requires = {"nvim-lua/plenary.nvim"}
     }
 
+    -- Lua
+    use {
+        "folke/trouble.nvim",
+        requires = "kyazdani42/nvim-web-devicons",
+        config = function()
+            require("trouble").setup {
+                -- your configuration comes here
+                -- or leave it empty to use the default settings
+                -- refer to the configuration section below
+            }
+        end
+    }
+
     use {'lewis6991/gitsigns.nvim'}
 
     use 'ThePrimeagen/harpoon'
@@ -1010,7 +1023,9 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wr',
                                 '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>',
                                 opts)
-    --  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wl',
+                                '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>',
+                                opts)
     -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>D',
     --                             '<cmd>lua vim.lsp.buf.type_definition()<CR>',
     --                             opts)
@@ -1330,6 +1345,21 @@ vim.api.nvim_create_autocmd({"BufEnter"},
 require('zettelkasten').setup({
     root_dir = "/Users/endrevegh/Dropbox/obsidian/personal/journal"
 })
+
+-- Lua
+vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>",
+               {silent = true, noremap = true})
+vim.keymap.set("n", "<leader>xw",
+               "<cmd>TroubleToggle workspace_diagnostics<cr>",
+               {silent = true, noremap = true})
+vim.keymap.set("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<cr>",
+               {silent = true, noremap = true})
+vim.keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>",
+               {silent = true, noremap = true})
+vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>",
+               {silent = true, noremap = true})
+vim.keymap.set("n", "gR", "<cmd>TroubleToggle lsp_references<cr>",
+               {silent = true, noremap = true})
 
 -- vim.api.nvim_set_keymap("n", "<leader>pd",
 --                         "<cmd> lua require('zettelkasten').daily_journal()<CR>",
