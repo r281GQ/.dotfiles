@@ -6,7 +6,6 @@ require('packer').startup(function(use)
         requires = {"nvim-lua/plenary.nvim"}
     }
 
-    -- Lua
     use {
         "folke/trouble.nvim",
         requires = "kyazdani42/nvim-web-devicons",
@@ -403,6 +402,10 @@ require("diffview").setup({
     keymaps = {
         disable_defaults = false, -- Disable the default keymaps
         view = {
+            {
+                "n", "-", actionss.toggle_stage_entry,
+                {desc = "Stage / unstage the selected entry."}
+            },
             -- The `view` bindings are active in the diff buffers, only when the current
             -- tabpage is a Diffview.
             ["<tab>"] = actionss.select_next_entry, -- Open the diff for the next file
@@ -435,58 +438,159 @@ require("diffview").setup({
             {{"n", "x"}, "3do", actionss.diffget("theirs")} -- Obtain the diff hunk from the THEIRS version of the file
         },
         file_panel = {
-            ["j"] = actions.next_entry, -- Bring the cursor to the next file entry
-            ["<down>"] = actions.next_entry,
-            ["k"] = actions.prev_entry, -- Bring the cursor to the previous file entry.
-            ["<up>"] = actions.prev_entry,
-            ["<cr>"] = actions.select_entry, -- Open the diff for the selected entry.
-            ["o"] = actions.select_entry,
-            ["<2-LeftMouse>"] = actions.select_entry,
-            ["-"] = actions.toggle_stage_entry, -- Stage / unstage the selected entry.
-            ["S"] = actions.stage_all, -- Stage all entries.
-            ["U"] = actions.unstage_all, -- Unstage all entries.
-            ["X"] = actions.restore_entry, -- Restore entry to the state on the left side.
-            ["L"] = actions.open_commit_log, -- Open the commit log panel.
-            ["<c-b>"] = actionss.scroll_view(-0.25), -- Scroll the view up
-            ["<c-f>"] = actionss.scroll_view(0.25), -- Scroll the view down
-            ["<tab>"] = actionss.select_next_entry,
-            ["<s-tab>"] = actionss.select_prev_entry,
-            ["gf"] = actionss.goto_file,
-            ["<C-w><C-f>"] = actionss.goto_file_split,
-            ["<C-w>gf"] = actions.goto_file_tab,
-            ["i"] = actions.listing_style, -- Toggle between 'list' and 'tree' views
-            ["f"] = actions.toggle_flatten_dirs, -- Flatten empty subdirectories in tree listing style.
-            ["R"] = actions.refresh_files, -- Update stats and entries in the file list.
-            ["<leader>e"] = actions.focus_files,
-            ["<leader>b"] = actions.toggle_files,
-            ["g<C-x>"] = actions.cycle_layout,
-            ["[x"] = actions.prev_conflict,
-            ["]x"] = actions.next_conflict
+            {
+                "n", "j", actionss.next_entry,
+                {desc = "Bring the cursor to the next file entry"}
+            }, {
+                "n", "<down>", actionss.next_entry,
+                {desc = "Bring the cursor to the next file entry"}
+            }, {
+                "n", "k", actionss.prev_entry,
+                {desc = "Bring the cursor to the previous file entry."}
+            }, {
+                "n", "<up>", actionss.prev_entry,
+                {desc = "Bring the cursor to the previous file entry."}
+            }, {
+                "n", "<cr>", actionss.select_entry,
+                {desc = "Open the diff for the selected entry."}
+            }, {
+                "n", "o", actionss.select_entry,
+                {desc = "Open the diff for the selected entry."}
+            }, {
+                "n", "<2-LeftMouse>", actionss.select_entry,
+                {desc = "Open the diff for the selected entry."}
+            }, {
+                "n", "-", actionss.toggle_stage_entry,
+                {desc = "Stage / unstage the selected entry."}
+            }, {"n", "S", actionss.stage_all, {desc = "Stage all entries."}},
+            {"n", "U", actionss.unstage_all, {desc = "Unstage all entries."}},
+            {
+                "n", "X", actionss.restore_entry,
+                {desc = "Restore entry to the state on the left side."}
+            },
+            {
+                "n", "L", actionss.open_commit_log,
+                {desc = "Open the commit log panel."}
+            },
+            {
+                "n", "<c-b>", actionss.scroll_view(-0.25),
+                {desc = "Scroll the view up"}
+            },
+            {
+                "n", "<c-f>", actionss.scroll_view(0.25),
+                {desc = "Scroll the view down"}
+            }, {
+                "n", "<tab>", actionss.select_next_entry,
+                {desc = "Open the diff for the next file"}
+            }, {
+                "n", "<s-tab>", actionss.select_prev_entry,
+                {desc = "Open the diff for the previous file"}
+            }, {
+                "n", "gf", actionss.goto_file,
+                {desc = "Open the file in a new split in the previous tabpage"}
+            }, {
+                "n", "<C-w><C-f>", actionss.goto_file_split,
+                {desc = "Open the file in a new split"}
+            }, {
+                "n", "<C-w>gf", actionss.goto_file_tab,
+                {desc = "Open the file in a new tabpage"}
+            }, {
+                "n", "i", actionss.listing_style,
+                {desc = "Toggle between 'list' and 'tree' views"}
+            }, {
+                "n", "f", actionss.toggle_flatten_dirs,
+                {desc = "Flatten empty subdirectories in tree listing style."}
+            }, {
+                "n", "R", actionss.refresh_files,
+                {desc = "Update stats and entries in the file list."}
+            }, {
+                "n", "<leader>e", actionss.focus_files,
+                {desc = "Bring focus to the file panel"}
+            },
+            {
+                "n", "<leader>b", actionss.toggle_files,
+                {desc = "Toggle the file panel"}
+            },
+            {
+                "n", "g<C-x>", actionss.cycle_layout,
+                {desc = "Cycle available layouts"}
+            },
+            {
+                "n", "[x", actionss.prev_conflict,
+                {desc = "Go to the previous conflict"}
+            },
+            {
+                "n", "]x", actionss.next_conflict,
+                {desc = "Go to the next conflict"}
+            }
         },
         file_history_panel = {
-            ["g!"] = actions.options, -- Open the option panel
-            ["<C-A-d>"] = actions.open_in_diffview, -- Open the entry under the cursor in a diffview
-            ["y"] = actions.copy_hash, -- Copy the commit hash of the entry under the cursor
-            ["L"] = actions.open_commit_log,
-            ["zR"] = actions.open_all_folds,
-            ["zM"] = actions.close_all_folds,
-            ["j"] = actions.next_entry,
-            ["<down>"] = actions.next_entry,
-            ["k"] = actions.prev_entry,
-            ["<up>"] = actions.prev_entry,
-            ["<cr>"] = actions.select_entry,
-            ["o"] = actions.select_entry,
-            ["<2-LeftMouse>"] = actions.select_entry,
-            ["<c-b>"] = actionss.scroll_view(-0.25),
-            ["<c-f>"] = actionss.scroll_view(0.25),
-            ["<tab>"] = actionss.select_next_entry,
-            ["<s-tab>"] = actionss.select_prev_entry,
-            ["gf"] = actionss.goto_file,
-            ["<C-w><C-f>"] = actionss.goto_file_split,
-            ["<C-w>gf"] = actionss.goto_file_tab,
-            ["<leader>e"] = actionss.focus_files,
-            ["<leader>b"] = actionss.toggle_files,
-            ["g<C-x>"] = actionss.cycle_layout
+            {"n", "g!", actionss.options, {desc = "Open the option panel"}}, {
+                "n", "<C-A-d>", actionss.open_in_diffview,
+                {desc = "Open the entry under the cursor in a diffview"}
+            }, {
+                "n", "y", actionss.copy_hash,
+                {desc = "Copy the commit hash of the entry under the cursor"}
+            },
+            {"n", "L", actionss.open_commit_log, {desc = "Show commit details"}},
+            {"n", "zR", actionss.open_all_folds, {desc = "Expand all folds"}},
+            {"n", "zM", actionss.close_all_folds, {desc = "Collapse all folds"}},
+            {
+                "n", "j", actionss.next_entry,
+                {desc = "Bring the cursor to the next file entry"}
+            }, {
+                "n", "<down>", actionss.next_entry,
+                {desc = "Bring the cursor to the next file entry"}
+            }, {
+                "n", "k", actionss.prev_entry,
+                {desc = "Bring the cursor to the previous file entry."}
+            }, {
+                "n", "<up>", actionss.prev_entry,
+                {desc = "Bring the cursor to the previous file entry."}
+            }, {
+                "n", "<cr>", actionss.select_entry,
+                {desc = "Open the diff for the selected entry."}
+            }, {
+                "n", "o", actionss.select_entry,
+                {desc = "Open the diff for the selected entry."}
+            }, {
+                "n", "<2-LeftMouse>", actionss.select_entry,
+                {desc = "Open the diff for the selected entry."}
+            },
+            {
+                "n", "<c-b>", actionss.scroll_view(-0.25),
+                {desc = "Scroll the view up"}
+            },
+            {
+                "n", "<c-f>", actionss.scroll_view(0.25),
+                {desc = "Scroll the view down"}
+            }, {
+                "n", "<tab>", actionss.select_next_entry,
+                {desc = "Open the diff for the next file"}
+            }, {
+                "n", "<s-tab>", actionss.select_prev_entry,
+                {desc = "Open the diff for the previous file"}
+            }, {
+                "n", "gf", actionss.goto_file,
+                {desc = "Open the file in a new split in the previous tabpage"}
+            }, {
+                "n", "<C-w><C-f>", actionss.goto_file_split,
+                {desc = "Open the file in a new split"}
+            }, {
+                "n", "<C-w>gf", actionss.goto_file_tab,
+                {desc = "Open the file in a new tabpage"}
+            }, {
+                "n", "<leader>e", actionss.focus_files,
+                {desc = "Bring focus to the file panel"}
+            },
+            {
+                "n", "<leader>b", actionss.toggle_files,
+                {desc = "Toggle the file panel"}
+            },
+            {
+                "n", "g<C-x>", actionss.cycle_layout,
+                {desc = "Cycle available layouts"}
+            }
         },
         option_panel = {["<tab>"] = actions.select_entry, ["q"] = actions.close}
     }
@@ -1023,9 +1127,9 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wr',
                                 '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>',
                                 opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wl',
-                                '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>',
-                                opts)
+    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wl',
+    --                             '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>',
+    --                             opts)
     -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>D',
     --                             '<cmd>lua vim.lsp.buf.type_definition()<CR>',
     --                             opts)
@@ -1341,10 +1445,6 @@ vim.cmd [[:autocmd InsertEnter * set cul
 -- issue when opening a file with telescope intterupts folds, need to make it for other events, like focus.
 vim.api.nvim_create_autocmd({"BufEnter"},
                             {pattern = {"*"}, command = "normal zx"})
-
-require('zettelkasten').setup({
-    root_dir = "/Users/endrevegh/Dropbox/obsidian/personal/journal"
-})
 
 -- Lua
 vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>",
